@@ -10,7 +10,7 @@ void main() {
     String? sTmp;
     NetworkStatus code;
 
-    (sTmp, code) = await netSource.loadDataFromSourceAsync(
+    (sTmp, code) = await netSource.requestNetwork(
       method: HttpMethod.get,
       url: "test",
       /* jsonHeaders: {

@@ -80,7 +80,7 @@ class NetDatasource {
   bool connected = false;
   String baseUrl;
 
-  Future<(String? response, NetworkStatus code)> loadDataFromSourceAsync(
+  Future<(String? response, NetworkStatus code)> requestNetwork(
       {required HttpMethod method,
       Map<String, dynamic>? jsonBody,
       Map<String, String>? jsonBodyFields,

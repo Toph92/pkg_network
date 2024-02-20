@@ -8,9 +8,8 @@ NetDatasource netSource = NetDatasource(
 void main() {
   test('Network connect', () async {
     String? sTmp;
-    NetworkStatus code;
 
-    (sTmp, code) = await netSource.requestNetwork(
+    sTmp = await netSource.requestNetwork(
       method: HttpMethod.get,
       url: "test",
       /* jsonHeaders: {
@@ -18,6 +17,6 @@ void main() {
         } */
     );
     print("Result: $sTmp");
-    Console.printColor(PrintColor.white, code.errorMessage);
+    Console.printColor(PrintColor.white, netSource.status.errorMessage);
   });
 }

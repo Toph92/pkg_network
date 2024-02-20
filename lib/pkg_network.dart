@@ -79,14 +79,15 @@ class NetDatasource {
   bool disableCertCheck;
   bool connected = false;
   String baseUrl;
+  NetworkStatus status = NetworkStatus.otherError;
 
-  Future<(String? response, NetworkStatus code)> requestNetwork(
+  Future<String?> requestNetwork(
       {required HttpMethod method,
       Map<String, dynamic>? jsonBody,
       Map<String, String>? jsonBodyFields,
       Map<String, String>? jsonHeaders,
       required String url}) async {
-    NetworkStatus code = NetworkStatus.otherError;
+    status = NetworkStatus.otherError;
     assert(url.left(1) != '/');
 
     var defaultHeaders = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -113,27 +114,29 @@ class NetDatasource {
       StreamedResponse response = await request.send();
       connected = true;
       if (response.statusCode == 200) {
-        return (await response.stream.bytesToString(), NetworkStatus.ok);
+        status = NetworkStatus.ok;
+        return (await response.stream.bytesToString());
       } else {
         Console.printColor(PrintColor.red, response.reasonPhrase);
       }
-      return (null, NetworkStatus.otherError);
+      status = NetworkStatus.otherError;
+      return null;
     } catch (e) {
       connected = false;
       if (e is SocketException) {
         switch (e.osError?.errorCode) {
           case 11001:
-            code = NetworkStatus.timeout;
+            status = NetworkStatus.timeout;
             break;
           case 1225:
-            code = NetworkStatus.connectionRefused;
+            status = NetworkStatus.connectionRefused;
             break;
           default:
-            code = NetworkStatus.otherError;
+            status = NetworkStatus.otherError;
         }
       }
       Console.printColor(PrintColor.red, "$e]");
-      return (null, code);
+      return null;
     }
   }
 }
